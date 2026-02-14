@@ -1,13 +1,24 @@
+import os
 import json
 import re
 import langgraph.graph as lg
 from langchain.schema import SystemMessage, HumanMessage
 from langchain_groq import ChatGroq
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
+groq_api_key = os.getenv("GROQ_API_KEY")
+if not groq_api_key:
+    raise ValueError("Missing GROQ_API_KEY environment variable")
+
 llm = ChatGroq(
     temperature=0,
-    groq_api_key="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",
-    model_name="llama-3.3-70b-versatile"
+    groq_api_key=groq_api_key,
+    model_name=os.getenv("MODEL_NAME", "llama-3.3-70b-versatile")
 )
 
 def fix_class_diagram_syntax(code: str) -> str:

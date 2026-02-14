@@ -1,5 +1,5 @@
 import re
-from flowchart_generator import flowchart_workflow
+from Server.flowchart_generator import flowchart_workflow
 from flask import Flask, request, jsonify, render_template
 import logging
 
