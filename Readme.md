@@ -1,6 +1,6 @@
 # Diagram AI Agent
 
-A AI Agent that converts plain-English prompts into Mermaid diagrams using Groq (Llama) via LangChain + LangGraph.
+An AI Agent that converts plain-English prompts into Mermaid diagrams using Groq (Llama) via LangChain + LangGraph.
 
 ## Features
 - `/generate` API that returns JSON: `{ "code": "..." }`
