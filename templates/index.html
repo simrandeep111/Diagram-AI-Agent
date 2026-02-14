@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diagram Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Smart Diagram Generator</h1>
+            <p>Generate technical diagrams using natural language</p>
+        </header>
+        
+        <main>
+            <div class="input-section">
+                <input type="text" id="query" 
+                       placeholder="e.g. Banking system class diagram, E-commerce flowchart">
+                <button onclick="generateDiagram()">Generate</button>
+                <button id="downloadBtn" class="download-btn">Download SVG</button>
+            </div>
+
+            <div class="diagram-container" id="diagram">
+                <div class="loading">Your diagram will appear here...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+    <script>
+        async function generateDiagram() {
+            const container = document.getElementById('diagram');
+            const downloadBtn = document.getElementById('downloadBtn');
+            container.innerHTML = '<div class="loading">Generating...</div>';
+            downloadBtn.style.display = 'none';
+            
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        query: document.getElementById('query').value
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || `Server error: ${response.status}`);
+                }
+
+                if (!data.code) {
+                    throw new Error("Invalid diagram code received");
+                }
+
+                await renderMermaid(container, data.code);
+                downloadBtn.style.display = 'inline-block';
+
+            } catch (error) {
+                container.innerHTML = `<div class="error">${error.message}</div>`;
+                downloadBtn.style.display = 'none';
+                console.error('Error details:', error);
+            }
+        }
+
+        async function renderMermaid(container, code) {
+            try {
+                mermaid.initialize({
+                    startOnLoad: false,
+                    securityLevel: 'loose',
+                    theme: 'default',
+                    classDiagram: {
+                        diagramPadding: 20,
+                        nodeSpacing: 40,
+                        dividerMargin: 15
+                    }
+                });
+                
+                const { svg } = await mermaid.render('mermaid-diagram', code);
+                container.innerHTML = svg;
+                
+                // Add interactivity
+                container.querySelectorAll('.node').forEach(node => {
+                    node.style.cursor = 'pointer';
+                    node.addEventListener('click', () => {
+                        node.classList.toggle('highlight-node');
+                    });
+                });
+
+            } catch (mermaidError) {
+                container.innerHTML = `<div class="error">Diagram Error: ${mermaidError.message}</div>`;
+            }
+        }
+
+        // Download functionality
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const svgElement = document.querySelector('#diagram svg');
+            if (!svgElement) {
+                alert('No diagram available to download');
+                return;
+            }
+            
+            const svgData = new XMLSerializer().serializeToString(svgElement);
+            const blob = new Blob([svgData], { type: 'image/svg+xml' });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `diagram-${Date.now()}.svg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

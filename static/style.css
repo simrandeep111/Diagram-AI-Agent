@@ -1,0 +1,100 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.input-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+#query {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+button {
+    padding: 1rem 2rem;
+    background-color: #2a3f54;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #1d2a3a;
+}
+
+.download-btn {
+    display: none;
+    background-color: #4CAF50;
+}
+
+.download-btn:hover {
+    background-color: #45a049;
+}
+
+.diagram-container {
+    border: 2px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 1.5rem;
+    min-height: 400px;
+    background: #fff;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    padding: 2rem;
+}
+
+.error {
+    color: #dc3545;
+    padding: 1rem;
+    background: #ffe6e6;
+    border-radius: 4px;
+}
+
+.mermaid .node rect {
+    fill: #2a3f54;
+    stroke: #1d2a3a;
+    rx: 5px;
+    transition: all 0.3s;
+}
+
+.mermaid .classBox rect {
+    fill: #fff;
+    stroke: #2a3f54;
+    rx: 5px;
+}
+
+.highlight-node {
+    filter: brightness(1.1);
+    transform: scale(1.05);
+}
+
+h1 {
+    text-align: center;
+}
+
+p {
+    text-align: center;
+}
